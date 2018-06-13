@@ -1,7 +1,7 @@
 package com.rusia2018.model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,8 +9,8 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -52,6 +52,8 @@ public class Match {
 	
 	@Column
 	private Boolean finished;
+	
+	
     
     //Constructor
     public Match() {}
@@ -143,4 +145,5 @@ public class Match {
 		this.finished = finished;
 	}
 
+	
 }

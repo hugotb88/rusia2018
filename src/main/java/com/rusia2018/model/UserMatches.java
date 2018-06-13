@@ -29,7 +29,7 @@ public class UserMatches {
 	private Long idUser;
 	
 	@Column
-	private String name;
+	private Integer name;
 	
 	@Column
 	private String type;
@@ -57,7 +57,7 @@ public class UserMatches {
     public UserMatches() {}
 
     //Constructor
-	public UserMatches(Long idUserMatches, Long idUser, String name, String type, Integer home_team,
+	public UserMatches(Long idUserMatches, Long idUser, Integer name, String type, Integer home_team,
 			Integer away_team, Integer home_result, Integer away_result, String date, Integer matchday) {
 		this.idUserMatches = idUserMatches;
 		this.idUser = idUser;
@@ -88,11 +88,11 @@ public class UserMatches {
 		this.idUser = idUser;
 	}
 
-	public String getName() {
+	public Integer getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(Integer name) {
 		this.name = name;
 	}
 

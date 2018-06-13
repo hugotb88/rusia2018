@@ -1,10 +1,14 @@
 package com.rusia2018.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -39,6 +43,9 @@ public class User {
     
 	@Column
 	private Boolean paid;
+	
+	@Transient
+	private ArrayList<UserMatches> matches;
 	
 	
     //Constructor
@@ -113,5 +120,14 @@ public class User {
 	public void setPaid(Boolean paid) {
 		this.paid = paid;
 	}
+
+	public ArrayList<UserMatches> getMatches() {
+		return matches;
+	}
+
+	public void setMatches(ArrayList<UserMatches> matches) {
+		this.matches = matches;
+	}
     
+	
 }

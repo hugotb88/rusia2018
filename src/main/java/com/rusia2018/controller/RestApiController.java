@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,8 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.rusia2018.model.Match;
 import com.rusia2018.model.Team;
 import com.rusia2018.model.User;
+import com.rusia2018.model.UserMatches;
 import com.rusia2018.repository.MatchRepository;
 import com.rusia2018.repository.TeamRepository;
+import com.rusia2018.repository.UserMatchesRepository;
 import com.rusia2018.repository.UserRepository;
 
 /**
@@ -42,16 +45,20 @@ public class RestApiController {
 	@Autowired
 	TeamRepository teamRepository;
 	
-	
+	@Autowired
+	UserMatchesRepository userMatchesRepository;
  
     // ------------------- Users -------------------------------------------
 	// Create a new User
-	@PostMapping("/user/{idUser}")
-	public User createUser(@PathVariable("idUser") int idUser, @RequestBody User user) {
+	@PostMapping("/user")
+	public User createUser(@RequestBody User user) {
 		User userRes = new User();
 		userRes = userRepository.checkIfUserExist(user.getIdUser());
 		if(userRes != null) {
 			System.out.println("El user existe, ve por sus partidos");
+			ArrayList<UserMatches> listUserMatches = new ArrayList<UserMatches>();
+			listUserMatches = (ArrayList<UserMatches>) userMatchesRepository.getAllUserMatches(user.getIdUser());
+			userRes.setMatches(listUserMatches);
 		}else {
 			userRes = userRepository.save(user);
 		}
@@ -98,6 +105,41 @@ public class RestApiController {
 		Match match = new Match();
 		match = matchRepository.getMatchById(idMatches);
 	    return match;
+	}
+	
+	
+	// ------------------- User Matches -------------------------------------------
+	@PostMapping("/user/matches")
+	public UserMatches createUserMatches(@RequestBody UserMatches userMatches) {
+		UserMatches userMatchesRes = new UserMatches();
+		userMatchesRes = userMatchesRepository.checkIfUserMatchesExist(userMatches.getIdUser(),userMatches.getName());
+		if(userMatchesRes != null) {
+			System.out.println("El Match existe, llamar al metodo PUT para actualizar");
+			userMatches.setIdUserMatches(userMatchesRes.getIdUserMatches());
+			updateMatchesById(userMatches);
+		}else {
+			System.out.println("El match no existe, se guardará");
+			userMatchesRes = userMatchesRepository.save(userMatches);
+		}
+	    return userMatchesRes;
+	}
+	
+	@GetMapping("/user/matches/{idUser}")
+	public List<UserMatches> getMatchesByIdUser(@PathVariable("idUser") Long idUser) {
+		List<UserMatches> listUserMatches = new ArrayList<UserMatches>();
+		listUserMatches = userMatchesRepository.getAllUserMatches(idUser);
+	    return listUserMatches;
+	}
+	
+	@PutMapping("/user/matches/update")
+	public UserMatches updateMatchesById(@RequestBody UserMatches userMatches) {
+		Integer res = userMatchesRepository.updateUserMatchById(userMatches.getHome_result(), userMatches.getAway_result(), userMatches.getIdUser(), userMatches.getIdUserMatches(),userMatches.getName());
+	    if (res == 0) {
+	    	System.out.println("not updated");
+	    }else{
+	    	System.out.println("updated");
+	    }
+		return userMatches;
 	}
 	
      
