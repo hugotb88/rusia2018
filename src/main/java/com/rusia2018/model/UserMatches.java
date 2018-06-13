@@ -1,15 +1,11 @@
 package com.rusia2018.model;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -19,15 +15,18 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * @author Hugo
  * Match POJO
  */
-@Entity(name="matches")
+@Entity(name="user_matches")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(allowGetters = true)
-public class Match {
+public class UserMatches {
 	
 	//Fields
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Integer idMatches;
+	private Long idUserMatches;
+	
+	@Column
+	private Long idUser;
 	
 	@Column
 	private String name;
@@ -48,18 +47,20 @@ public class Match {
 	private Integer away_result;
 	
 	@Column
-	private LocalDateTime date;
-	
+	private String date;
+
 	@Column
-	private Boolean finished;
-    
+	private Integer matchday;
+	
+	
     //Constructor
-    public Match() {}
+    public UserMatches() {}
 
     //Constructor
-	public Match(Integer idMatches, String name, String type, Integer home_team, Integer away_team,
-			Integer home_result, Integer away_result, LocalDateTime date, Boolean finished) {
-		this.idMatches = idMatches;
+	public UserMatches(Long idUserMatches, Long idUser, String name, String type, Integer home_team,
+			Integer away_team, Integer home_result, Integer away_result, String date, Integer matchday) {
+		this.idUserMatches = idUserMatches;
+		this.idUser = idUser;
 		this.name = name;
 		this.type = type;
 		this.home_team = home_team;
@@ -67,16 +68,24 @@ public class Match {
 		this.home_result = home_result;
 		this.away_result = away_result;
 		this.date = date;
-		this.finished = finished;
-	}
-	
-	//Getters and Setters
-	public Integer getIdMatches() {
-		return idMatches;
+		this.matchday = matchday;
 	}
 
-	public void setIdMatches(Integer idMatches) {
-		this.idMatches = idMatches;
+	//Getters and Setters
+	public Long getIdUserMatches() {
+		return idUserMatches;
+	}
+
+	public void setIdUserMatches(Long idUserMatches) {
+		this.idUserMatches = idUserMatches;
+	}
+
+	public Long getIdUser() {
+		return idUser;
+	}
+
+	public void setIdUser(Long idUser) {
+		this.idUser = idUser;
 	}
 
 	public String getName() {
@@ -127,20 +136,20 @@ public class Match {
 		this.away_result = away_result;
 	}
 
-	public LocalDateTime getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(LocalDateTime date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 
-	public Boolean getFinished() {
-		return finished;
+	public Integer getMatchday() {
+		return matchday;
 	}
 
-	public void setFinished(Boolean finished) {
-		this.finished = finished;
+	public void setMatchday(Integer matchday) {
+		this.matchday = matchday;
 	}
-
+	
 }

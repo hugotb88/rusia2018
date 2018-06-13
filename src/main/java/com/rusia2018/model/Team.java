@@ -18,8 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * @author Hugo
  * Team POJO
  */
-@Entity
-@Table(name="team")
+@Entity(name="teams")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(allowGetters = true)
 public class Team {
@@ -27,123 +26,97 @@ public class Team {
 	//Fields
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Integer idTeam;
+	private Integer id;
 	
 	@Column
-	private String teamName;
-
-	@Column
-	private char group;
+	private String name;
 	
 	@Column
-	private String flagIcon;
+	private String fifacode;
 	
 	@Column
-	private Boolean r16;
+	private String iso2;
 	
 	@Column
-	private Boolean quarter;
+	private String flag;
 	
 	@Column
-	private Boolean semi;
+	private String emoji;
 	
 	@Column
-	private Boolean finals;
-	
-	@Column
-	private Boolean third;
-	
+	private String emojiString;
 	
     
     //Constructor
     public Team() {}
-    
+
     //Constructor
-    public Team(Integer idTeam, String teamName, char group, String flagIcon, Boolean r16, Boolean quarter,
-			Boolean semi, Boolean finals, Boolean third) {
-		this.idTeam = idTeam;
-		this.teamName = teamName;
-		this.group = group;
-		this.flagIcon = flagIcon;
-		this.r16 = r16;
-		this.quarter = quarter;
-		this.semi = semi;
-		this.finals = finals;
-		this.third = third;
+	public Team(Integer id, String name, String fifacode, String iso2, String flag, String emoji, String emojiString) {
+		this.id = id;
+		this.name = name;
+		this.fifacode = fifacode;
+		this.iso2 = iso2;
+		this.flag = flag;
+		this.emoji = emoji;
+		this.emojiString = emojiString;
 	}
-    
-    
-    //Getters and Setters
-	public Integer getIdTeam() {
-		return idTeam;
+	
+	
+	//Getters and Setters
+	public Integer getId() {
+		return id;
 	}
 
-	public void setIdTeam(Integer idTeam) {
-		this.idTeam = idTeam;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
-	public String getTeamName() {
-		return teamName;
+	public String getName() {
+		return name;
 	}
 
-	public void setTeamName(String teamName) {
-		this.teamName = teamName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public char getGroup() {
-		return group;
+	public String getFifacode() {
+		return fifacode;
 	}
 
-	public void setGroup(char group) {
-		this.group = group;
+	public void setFifacode(String fifacode) {
+		this.fifacode = fifacode;
 	}
 
-	public String getFlagIcon() {
-		return flagIcon;
+	public String getIso2() {
+		return iso2;
 	}
 
-	public void setFlagIcon(String flagIcon) {
-		this.flagIcon = flagIcon;
+	public void setIso2(String iso2) {
+		this.iso2 = iso2;
 	}
 
-	public Boolean getR16() {
-		return r16;
+	public String getFlag() {
+		return flag;
 	}
 
-	public void setR16(Boolean r16) {
-		this.r16 = r16;
+	public void setFlag(String flag) {
+		this.flag = flag;
 	}
 
-	public Boolean getQuarter() {
-		return quarter;
+	public String getEmoji() {
+		return emoji;
 	}
 
-	public void setQuarter(Boolean quarter) {
-		this.quarter = quarter;
+	public void setEmoji(String emoji) {
+		this.emoji = emoji;
 	}
 
-	public Boolean getSemi() {
-		return semi;
+	public String getEmojiString() {
+		return emojiString;
 	}
 
-	public void setSemi(Boolean semi) {
-		this.semi = semi;
-	}
-
-	public Boolean getFinals() {
-		return finals;
-	}
-
-	public void setFinals(Boolean finals) {
-		this.finals = finals;
-	}
-
-	public Boolean getThird() {
-		return third;
-	}
-
-	public void setThird(Boolean third) {
-		this.third = third;
+	public void setEmojiString(String emojiString) {
+		this.emojiString = emojiString;
 	}
     
 }
