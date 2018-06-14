@@ -7,6 +7,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +31,7 @@ import com.rusia2018.repository.UserRepository;
  */
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api")
 public class RestApiController {
 	
@@ -72,6 +74,18 @@ public class RestApiController {
 		ArrayList<User> scoresOfAll = new ArrayList<User>();
 		scoresOfAll = (ArrayList<User>) userRepository.getScoresOfAll();
 	    return scoresOfAll;
+	}
+	
+	//Update user score
+	@PutMapping("/user/updateScore")
+	public User updateUserScore(@RequestBody User user) {
+		Integer res = userRepository.updateUserScore(user.getTotalScore(), user.getIdUser());
+	    if (res == 0) {
+	    	System.out.println("not updated");
+	    }else{
+	    	System.out.println("updated");
+	    }
+		return user;
 	}
 	
 	
