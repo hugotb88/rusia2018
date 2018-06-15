@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rusia2018.model.Match;
+import com.rusia2018.model.StaticMatches;
 import com.rusia2018.model.Team;
 import com.rusia2018.model.User;
 import com.rusia2018.model.UserMatches;
 import com.rusia2018.repository.MatchRepository;
+import com.rusia2018.repository.StaticMatchesRepository;
 import com.rusia2018.repository.TeamRepository;
 import com.rusia2018.repository.UserMatchesRepository;
 import com.rusia2018.repository.UserRepository;
@@ -49,6 +51,9 @@ public class RestApiController {
 	
 	@Autowired
 	UserMatchesRepository userMatchesRepository;
+	
+	@Autowired
+	StaticMatchesRepository staticMatchesRepository;
  
     // ------------------- Users -------------------------------------------
 	// Create a new User
@@ -86,6 +91,20 @@ public class RestApiController {
 	    	System.out.println("updated");
 	    }
 		return user;
+	}
+	
+	//Get finished matches for user
+	@GetMapping(value = "/user/finishedMatches/{idUser}")
+	public User getFinishedMatchesForUserId(@PathVariable("idUser") Long idUser) {
+		User userRes = new User();
+		userRes = userRepository.checkIfUserExist(idUser);
+		if(userRes != null) {
+			System.out.println("El user existe, ve por sus partidos finalizados");
+			ArrayList<UserMatches> listFinishedUserMatches = new ArrayList<UserMatches>();
+			listFinishedUserMatches = (ArrayList<UserMatches>) userMatchesRepository.getFinishedMatchesByUser(idUser);
+			userRes.setMatches(listFinishedUserMatches);
+		}
+	    return userRes;
 	}
 	
 	
@@ -147,7 +166,7 @@ public class RestApiController {
 	
 	@PutMapping("/user/matches/update")
 	public UserMatches updateMatchesById(@RequestBody UserMatches userMatches) {
-		Integer res = userMatchesRepository.updateUserMatchById(userMatches.getHome_result(), userMatches.getAway_result(), userMatches.getIdUser(), userMatches.getIdUserMatches(),userMatches.getName());
+		Integer res = userMatchesRepository.updateUserMatchById(userMatches.getHome_result(), userMatches.getAway_result(), false, userMatches.getIdUser(), userMatches.getIdUserMatches(),userMatches.getName());
 	    if (res == 0) {
 	    	System.out.println("not updated");
 	    }else{
@@ -156,5 +175,86 @@ public class RestApiController {
 		return userMatches;
 	}
 	
+	// ------------------- Static Matches -------------------------------------------
+	@PutMapping("/static/matches")
+	public StaticMatches updateStaticMatchResult(@RequestBody StaticMatches staticMatches) {
+		Integer staticMatchesRes; //To check if it was updated
+		
+		//User
+		User user = new User();
+		
+		//Determines Result of the match
+		String staticMatchResult = determineResult(staticMatches.getHome_result(), staticMatches.getAway_result());
+		
+		//Update result in static_matches for one match
+		staticMatches.setFinished(true);
+		staticMatchesRes = staticMatchesRepository.updateStaticMatchResultById(staticMatches.getHome_result(), staticMatches.getAway_result(), staticMatches.getFinished() ,staticMatches.getIdStaticMatches(), staticMatches.getName());
+		
+		//Get All userMatches with name and id of the match result updated
+		ArrayList<UserMatches> listUserMatchesByMatch = new ArrayList<UserMatches>();
+		listUserMatchesByMatch = userMatchesRepository.getSameUserMatchForAllUsersByMatchId(staticMatches.getName());
+		
+		//For-Each to determinate if user adds points
+		for (UserMatches userMatches : listUserMatchesByMatch) {
+			//Determines userMatch Result
+			String userMatchResult = determineResult(userMatches.getHome_result(), userMatches.getAway_result());
+			
+			//Get user to update TotalScore
+			user = userRepository.checkIfUserExist(userMatches.getIdUser());
+			
+			//Get current totalScore
+			Integer newTotalScore = user.getTotalScore();
+			
+			//Adds 1 point
+			if(staticMatchResult.equals(userMatchResult)) {
+				newTotalScore++;
+			}
+			
+			//Adds 3 points
+			if(userMatches.getHome_result() == staticMatches.getHome_result() 
+					&& userMatches.getAway_result() == staticMatches.getAway_result() ) {
+				
+				newTotalScore += 2;
+			}
+			
+			//Update totalScore
+			user.setTotalScore(newTotalScore);
+			userRepository.updateUserScore(user.getTotalScore(), user.getIdUser());
+			
+			//update finished column as "true" for the match o that user
+			userMatchesRepository.updateUserMatchById(userMatches.getHome_result(), userMatches.getAway_result(), true, userMatches.getIdUser(), userMatches.getIdUserMatches(), userMatches.getName());
+		}
+		
+		
+	    return staticMatches;
+	}
+	
+	// Get Scores of all users
+	@GetMapping("/static/matches/getAll")
+	public List<StaticMatches> getAllRealScores() {
+		ArrayList<StaticMatches> listAllRealScores = new ArrayList<StaticMatches>();
+		listAllRealScores = (ArrayList<StaticMatches>) staticMatchesRepository.getAllRealResults();
+	    return listAllRealScores;
+	}
+	
+	
+	//Function that determines if the match was won by "H"ome team, "A"way team or "Draw"
+	public String determineResult(Integer home_result, Integer away_result) {
+		String res="X";
+		
+		if (home_result > away_result) {
+			res="H";
+		}
+		
+		if (home_result < away_result) {
+			res="A";
+		}
+		
+		if (home_result == away_result) {
+			res="D";
+		}
+		
+		return res;
+	}
      
 }

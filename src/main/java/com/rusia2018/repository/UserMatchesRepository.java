@@ -27,10 +27,15 @@ public interface UserMatchesRepository extends JpaRepository<UserMatches, Serial
 	@Query(value="SELECT um.idUserMatches, m.away_result, m.away_team, m.date, m.home_result, m.home_team, um.idUser, um.matchday, m.name, m.type FROM matches m LEFT JOIN user_matches um ON m.name = um.name AND um.idUser = :idUser",nativeQuery=true)
     public ArrayList<UserMatches> getAllUserMatchesByUser(@Param("idUser") Long idUser);
 	
+	@Query(value="SELECT * FROM user_matches um WHERE um.name = :name",nativeQuery=true)
+    public ArrayList<UserMatches> getSameUserMatchForAllUsersByMatchId(@Param("name") Integer name);
+	
 	@Transactional
 	@Modifying
-	@Query(value="UPDATE user_matches SET home_result = :home_result, away_result = :away_result WHERE idUser = :idUser AND idUserMatches = :idUserMatches AND name = :name",nativeQuery=true)
-    public Integer updateUserMatchById(@Param("home_result") Integer home_result, @Param("away_result") Integer away_result, @Param("idUser") Long idUser, @Param("idUserMatches") Long idUserMatches, @Param("name") Integer name);
+	@Query(value="UPDATE user_matches SET home_result = :home_result, away_result = :away_result, finished = :finished WHERE idUser = :idUser AND idUserMatches = :idUserMatches AND name = :name",nativeQuery=true)
+    public Integer updateUserMatchById(@Param("home_result") Integer home_result, @Param("away_result") Integer away_result, @Param("finished") Boolean finished, @Param("idUser") Long idUser, @Param("idUserMatches") Long idUserMatches, @Param("name") Integer name);
 	
+	@Query(value="SELECT * FROM user_matches um WHERE um.idUser = :idUser AND finished = 1",nativeQuery=true)
+    public List<UserMatches> getFinishedMatchesByUser(@Param("idUser") Long idUser);
 	
 }

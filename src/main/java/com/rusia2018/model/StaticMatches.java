@@ -1,5 +1,8 @@
 package com.rusia2018.model;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -7,26 +10,24 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * @author Hugo
- * Match POJO
+ * Static Matches POJO
  */
-@Entity(name="user_matches")
+@Entity(name="static_matches")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(allowGetters = true)
-public class UserMatches {
+public class StaticMatches {
 	
 	//Fields
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long idUserMatches;
-	
-	@Column
-	private Long idUser;
+	private Long idStaticMatches;
 	
 	@Column
 	private Integer name;
@@ -47,23 +48,20 @@ public class UserMatches {
 	private Integer away_result;
 	
 	@Column
-	private String date;
-
-	@Column
-	private Integer matchday;
+	private LocalDateTime date;
 	
 	@Column
 	private Boolean finished;
 	
 	
+    
     //Constructor
-    public UserMatches() {}
+    public StaticMatches() {}
 
     //Constructor
-	public UserMatches(Long idUserMatches, Long idUser, Integer name, String type, Integer home_team,
-			Integer away_team, Integer home_result, Integer away_result, String date, Integer matchday, Boolean finished) {
-		this.idUserMatches = idUserMatches;
-		this.idUser = idUser;
+	public StaticMatches(Long idStaticMatches, Integer name, String type, Integer home_team, Integer away_team,
+			Integer home_result, Integer away_result, LocalDateTime date, Boolean finished) {
+		this.idStaticMatches = idStaticMatches;
 		this.name = name;
 		this.type = type;
 		this.home_team = home_team;
@@ -71,25 +69,16 @@ public class UserMatches {
 		this.home_result = home_result;
 		this.away_result = away_result;
 		this.date = date;
-		this.matchday = matchday;
 		this.finished = finished;
 	}
-
+	
 	//Getters and Setters
-	public Long getIdUserMatches() {
-		return idUserMatches;
+	public Long getIdStaticMatches() {
+		return idStaticMatches;
 	}
 
-	public void setIdUserMatches(Long idUserMatches) {
-		this.idUserMatches = idUserMatches;
-	}
-
-	public Long getIdUser() {
-		return idUser;
-	}
-
-	public void setIdUser(Long idUser) {
-		this.idUser = idUser;
+	public void setIdStaticMatches(Long idStaticMatches) {
+		this.idStaticMatches = idStaticMatches;
 	}
 
 	public Integer getName() {
@@ -140,20 +129,12 @@ public class UserMatches {
 		this.away_result = away_result;
 	}
 
-	public String getDate() {
+	public LocalDateTime getDate() {
 		return date;
 	}
 
-	public void setDate(String date) {
+	public void setDate(LocalDateTime date) {
 		this.date = date;
-	}
-
-	public Integer getMatchday() {
-		return matchday;
-	}
-
-	public void setMatchday(Integer matchday) {
-		this.matchday = matchday;
 	}
 
 	public Boolean getFinished() {
@@ -163,6 +144,6 @@ public class UserMatches {
 	public void setFinished(Boolean finished) {
 		this.finished = finished;
 	}
-	
+
 	
 }
